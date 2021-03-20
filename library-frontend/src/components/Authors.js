@@ -1,11 +1,28 @@
   
 import React from 'react'
+import {useFormik} from 'formik'
+import Select from 'react-select'
 
 const Authors = (props) => {
+
+    const formik = useFormik({
+        initialValues: {
+          name: '',
+          born: ''
+        },
+        onSubmit: ({name, born}, {resetForm}) => {
+            props.editAuthor({ variables: {name, born: parseInt(born)}})
+            resetForm()
+        },
+      });
+
+
+
   if (!props.show) {
     return null
   }
-  const authors = []
+
+  
 
   return (
     <div>
@@ -21,7 +38,7 @@ const Authors = (props) => {
               books
             </th>
           </tr>
-          {authors.map(a =>
+          {props.authors.map(a =>
             <tr key={a.name}>
               <td>{a.name}</td>
               <td>{a.born}</td>
@@ -30,6 +47,26 @@ const Authors = (props) => {
           )}
         </tbody>
       </table>
+      <h2>Set birthyear</h2>
+      <form onSubmit={formik.handleSubmit}>
+          <input 
+          type="text"
+          onChange={formik.handleChange}
+          value={formik.values.name}
+          name="name"
+          placeholder="name"
+          />
+
+
+          <input 
+          type="text"
+          onChange={formik.handleChange}
+          value={formik.values.born}
+          name="born"
+          placeholder="born"
+          />
+          <button type="submit">create</button>
+      </form>
 
     </div>
   )

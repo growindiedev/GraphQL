@@ -15,6 +15,7 @@ const NewBook = (props) => {
     event.preventDefault()
     
     console.log('add book...')
+    props.addBook({variables: {author, title, published: parseInt(published), genres}})
 
     setTitle('')
     setPublished('')
