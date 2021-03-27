@@ -1,47 +1,85 @@
 
-import React, { useState } from 'react'
-import { useQuery, useMutation } from '@apollo/client'
+import React, { useState, useEffect } from 'react'
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
+import { Switch, Route, Redirect } from 'react-router-dom'
+
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
-import { ALL_AUTHORS, ALL_BOOKS, ADD_BOOK, EDIT_AUTHOR} from './queries'
+import Login from './components/Login'
+import Navbar from './components/Navbar'
+
+
+
+import { ALL_AUTHORS, ALL_BOOKS, ADD_BOOK, EDIT_AUTHOR, ME, LOGIN} from './queries'
+import { VStack, Alert} from '@chakra-ui/layout'
 
 const App = () => {
-    const [page, setPage] = useState('authors')
+    const [token, setToken] = useState(null)
+    const [errorMessage, setErrorMessage] = useState(null)
     const allAuthorsQuery = useQuery(ALL_AUTHORS)
     const allBooksQuery = useQuery(ALL_BOOKS)
+    //const [getUsers, userQuery] = useLazyQuery(ME, { partialRefetch: true})
+    const userQuery = useQuery(ME)
     const [addBook] = useMutation(ADD_BOOK, { refetchQueries: [ { query: ALL_BOOKS }, { query: ALL_AUTHORS }  ]})
     const [editAuthor] = useMutation(EDIT_AUTHOR, { refetchQueries: [ { query: ALL_AUTHORS }, { query: ALL_BOOKS } ]})
 
-    if (allAuthorsQuery.loading || allBooksQuery.loading)  {
+    const [login, loginResult] = useMutation(LOGIN, {
+      onError: (error) => setErrorMessage(error.graphQLErrors[0].message),
+  })
+       
+
+  useEffect(() => {
+    if (loginResult.data) {
+        const token = loginResult.data.login.value
+        setToken(token)
+        localStorage.setItem('graphql-library-token', token)
+    }
+  }, [loginResult.data])
+
+  if (allAuthorsQuery.loading || allBooksQuery.loading || userQuery.loading)  {
         return <div>loading...</div>
-      }  
-
+  }
+      
   return (
-    <div>
-      <div>
-        <button onClick={() => setPage('authors')}>authors</button>
-        <button onClick={() => setPage('books')}>books</button>
-        <button onClick={() => setPage('add')}>add book</button>
-      </div>
-
+    <>
+    <Navbar setToken={setToken} user={userQuery.data?.me} token={token}/>
+    <VStack spacing="5">
+    <Switch>
+      <Route path="/" exact>
       <Authors
-        show={page === 'authors'}
         authors={allAuthorsQuery.data.allAuthors}
         editAuthor={editAuthor}
       />
-
+      </Route>
+      <Route path="/books">
       <Books
-        show={page === 'books'}
         books={allBooksQuery.data.allBooks}
       />
-
+      </Route>
+      <Route path="/newbook">
       <NewBook
-        show={page === 'add'}
         addBook={addBook}
       />
+      </Route>
+      <Route path="/login">
+      <Login
+        setToken={setToken}
+        setErrorMessage={setErrorMessage}
+        login={login}
+        loginResult={loginResult}
+        //getUsers={getUsers}
+      />
+      </Route>
+      <Route
+        path="/"
+        render={() => (userQuery.data?.me?.username ? 
+          <Redirect to="/"/> : <Redirect to="/login" />)}
+     />
+    </Switch>
 
-    </div>
+    </VStack>
+    </>
   )
 }
 

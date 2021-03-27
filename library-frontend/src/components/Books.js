@@ -1,9 +1,9 @@
 import React from 'react'
 
 const Books = (props) => {
-  if (!props.show) {
-    return null
-  }
+  // if (!props.show) {
+  //   return null
+  // }
 
 
   return (

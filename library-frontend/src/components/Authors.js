@@ -15,13 +15,6 @@ const Authors = (props) => {
             resetForm()
         },
       });
-
-
-
-  if (!props.show) {
-    return null
-  }
-
   
 
   return (
@@ -56,7 +49,7 @@ const Authors = (props) => {
           name="name"
           placeholder="name"
           />
-
+          
 
           <input 
           type="text"
