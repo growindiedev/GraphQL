@@ -1,7 +1,6 @@
   
 import React from 'react'
 import {useFormik} from 'formik'
-import Select from 'react-select'
 
 const Authors = (props) => {
 

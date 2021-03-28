@@ -1,17 +1,18 @@
 
 import React, { useState, useEffect } from 'react'
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client'
 import { Switch, Route, Redirect } from 'react-router-dom'
 
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import Login from './components/Login'
+import SignUp from './components/SignUp'
 import Navbar from './components/Navbar'
 
 
 
-import { ALL_AUTHORS, ALL_BOOKS, ADD_BOOK, EDIT_AUTHOR, ME, LOGIN} from './queries'
+import { ALL_AUTHORS, ALL_BOOKS, ADD_BOOK, EDIT_AUTHOR, ME, LOGIN, SIGNUP} from './queries'
 import { VStack, Alert} from '@chakra-ui/layout'
 
 const App = () => {
@@ -19,14 +20,17 @@ const App = () => {
     const [errorMessage, setErrorMessage] = useState(null)
     const allAuthorsQuery = useQuery(ALL_AUTHORS)
     const allBooksQuery = useQuery(ALL_BOOKS)
-    //const [getUsers, userQuery] = useLazyQuery(ME, { partialRefetch: true})
     const userQuery = useQuery(ME)
     const [addBook] = useMutation(ADD_BOOK, { refetchQueries: [ { query: ALL_BOOKS }, { query: ALL_AUTHORS }  ]})
     const [editAuthor] = useMutation(EDIT_AUTHOR, { refetchQueries: [ { query: ALL_AUTHORS }, { query: ALL_BOOKS } ]})
 
     const [login, loginResult] = useMutation(LOGIN, {
       onError: (error) => setErrorMessage(error.graphQLErrors[0].message),
-  })
+    })
+
+    const [signup, signupResult] = useMutation(SIGNUP, {
+      onError: (error) => setErrorMessage(error.graphQLErrors[0].message),
+    })
        
 
   useEffect(() => {
@@ -44,37 +48,43 @@ const App = () => {
   return (
     <>
     <Navbar setToken={setToken} user={userQuery.data?.me} token={token}/>
-    <VStack spacing="5">
+    <VStack spacing="5" p="10">
     <Switch>
-      <Route path="/" exact>
+      <Route path="/authors" exact>
       <Authors
         authors={allAuthorsQuery.data.allAuthors}
         editAuthor={editAuthor}
       />
       </Route>
-      <Route path="/books">
-      <Books
-        books={allBooksQuery.data.allBooks}
-      />
-      </Route>
-      <Route path="/newbook">
-      <NewBook
-        addBook={addBook}
-      />
-      </Route>
-      <Route path="/login">
+      <Route
+        path="/books"
+        render={() => (token || userQuery.data.me.username ? 
+          <Books books={allBooksQuery.data.allBooks}/> : <Redirect to="/login" />)}
+     />
+      <Route
+        path="/newbook"
+        render={() => (token || userQuery.data.me.username ? 
+          <NewBook addBook={addBook}/> : <Redirect to="/login" />)}
+     />
+
+      <Route path="/login" exact render={() => (token || userQuery.data.me.username? <Redirect to="/authors"/> : 
       <Login
-        setToken={setToken}
         setErrorMessage={setErrorMessage}
         login={login}
         loginResult={loginResult}
-        //getUsers={getUsers}
-      />
-      </Route>
+      />)}/>
+
+      <Route path="/signup" exact render={() => (token || userQuery.data.me.username ? <Redirect to="/authors"/> : 
+      <SignUp
+        setErrorMessage={setErrorMessage}
+        handleRegister={signup}
+      />)}/>
+
       <Route
         path="/"
-        render={() => (userQuery.data?.me?.username ? 
-          <Redirect to="/"/> : <Redirect to="/login" />)}
+        exact
+        render={() => (token || userQuery.data.me.username ? 
+          <Redirect to="/authors"/> : <Redirect to="/login" />)}
      />
     </Switch>
 
