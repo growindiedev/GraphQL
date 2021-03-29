@@ -1,6 +1,18 @@
   
 import React from 'react'
 import {useFormik} from 'formik'
+import {VStack, Box, Heading, HStack} from '@chakra-ui/react'
+import {
+    Table,
+    Thead,
+    Tbody,
+    Tr,
+    Th,
+    Td,
+    TableCaption,
+    Input,
+    Button
+  } from "@chakra-ui/react"
 
 const Authors = (props) => {
 
@@ -17,50 +29,61 @@ const Authors = (props) => {
   
 
   return (
-    <div>
-      <h2>authors</h2>
-      <table>
-        <tbody>
-          <tr>
-            <th></th>
-            <th>
-              born
-            </th>
-            <th>
-              books
-            </th>
-          </tr>
+    <VStack p="5" mx="auto" width="xl" color="gray.600" spacing="5">
+      <Heading size="lg"  fontWeight="semibold">Authors</Heading>
+      <Box p={4} shadow="sm" borderWidth="1px" width="xl" borderRadius="md" mx="auto">
+      <Table size="md">
+      <TableCaption>Authors and the total no. books written by them</TableCaption>
+        <Tbody>
+          <Tr>
+            <Th>Author</Th>
+            <Th>
+              Born
+            </Th>
+            <Th>
+              Books
+            </Th>
+          </Tr>
           {props.authors.map(a =>
-            <tr key={a.name}>
-              <td>{a.name}</td>
-              <td>{a.born}</td>
-              <td>{a.bookCount}</td>
-            </tr>
+            <Tr key={a.name}>
+              <Td>{a.name}</Td>
+              <Td>{a.born}</Td>
+              <Td>{a.bookCount}</Td>
+            </Tr>
           )}
-        </tbody>
-      </table>
-      <h2>Set birthyear</h2>
+        </Tbody>
+      </Table>
+
+      </Box>
+    
       <form onSubmit={formik.handleSubmit}>
-          <input 
+      <Heading fontWeight="semibold" size="md" p="4" color="blue.400" >Set birth year</Heading>
+        <HStack width="lg">
+          <Input  
           type="text"
           onChange={formik.handleChange}
           value={formik.values.name}
           name="name"
-          placeholder="name"
+          placeholder="Name"
+          size="sm"
+          borderWidth="2px"
           />
           
 
-          <input 
+          <Input 
           type="text"
           onChange={formik.handleChange}
           value={formik.values.born}
           name="born"
-          placeholder="born"
+          placeholder="Born"
+          size="sm"
+          borderWidth="2px"
           />
-          <button type="submit">create</button>
+          <Button type="submit" size="sm" variant="solid" p="2" colorScheme="purple" borderRadius="sm" w="sm">update</Button>
+          </HStack>
       </form>
-
-    </div>
+      </VStack>
+      
   )
 }
 

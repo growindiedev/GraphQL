@@ -1,36 +1,46 @@
 import React from 'react'
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  Input,
+  Button,
+  Box
+} from "@chakra-ui/react"
 
 const Books = (props) => {
-  // if (!props.show) {
-  //   return null
-  // }
+  
 
 
   return (
-    <div>
-      <h2>books</h2>
+      <Box p={4} shadow="sm" borderWidth="1px" width="xl" borderRadius="md" mx="auto" my="4">
 
-      <table>
-        <tbody>
-          <tr>
-            <th></th>
-            <th>
+      <Table>
+      <TableCaption>Books written by various Authors</TableCaption>
+        <Tbody>
+          <Tr>
+            <Th>books</Th>
+            <Th>
               author
-            </th>
-            <th>
+            </Th>
+            <Th>
               published
-            </th>
-          </tr>
+            </Th>
+          </Tr>
           {props.books.map(a =>
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
-            </tr>
+            <Tr key={a.title}>
+              <Td>{a.title}</Td>
+              <Td>{a.author.name}</Td>
+              <Td>{a.published}</Td>
+            </Tr>
           )}
-        </tbody>
-      </table>
-    </div>
+        </Tbody>
+      </Table>
+    </Box>
   )
 }
 

@@ -28,9 +28,8 @@ const Navbar = (props) => {
            
             <Flex  align="center" px="40"  bg="gray.200" py="1.5" color="gray.600" 
             >
-                <Box px="2">
-                    <NavLink to="/"><Image w='120px' src='/inread.png' alt='inRead' /></NavLink>
-                
+                <Box pr="4">
+                    <NavLink to="/"><Image w='90px' src='/inread.png' alt='inRead'/></NavLink>
                 </Box>
                 <Box px="2"> 
                 <Text size="sm" fontWeight="semibold" _hover={{ color: 'orange.400' }}><NavLink to="/books" >Books</NavLink></Text>
@@ -38,7 +37,6 @@ const Navbar = (props) => {
                 <Box px="2"> 
                 <Text size="sm" fontWeight="semibold" _hover={{ color: 'orange.400' }}><NavLink to="/authors">Authors</NavLink></Text>
                 </Box>
-                <Spacer />
                 <Box px="2"> 
                 <Text size="sm" fontWeight="semibold" _hover={{ color: 'orange.400' }}><NavLink to="/newbook">Add Book</NavLink></Text>
                 </Box>

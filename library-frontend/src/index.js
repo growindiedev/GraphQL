@@ -30,7 +30,7 @@ const client = new ApolloClient({
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-   <ChakraProvider resetCSS={false}>
+   <ChakraProvider>
    <Router>
       <App />
       </Router>

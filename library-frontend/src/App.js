@@ -44,37 +44,38 @@ const App = () => {
   if (allAuthorsQuery.loading || allBooksQuery.loading || userQuery.loading)  {
         return <div>loading...</div>
   }
+
+  
       
   return (
     <>
-    <Navbar setToken={setToken} user={userQuery.data?.me} token={token}/>
+    <Navbar setToken={setToken} user={userQuery?.data?.me} token={token}/>
     <VStack spacing="5" p="10">
     <Switch>
-      <Route path="/authors" exact>
-      <Authors
-        authors={allAuthorsQuery.data.allAuthors}
-        editAuthor={editAuthor}
+      <Route
+          path="/authors"
+          render={() => (token || userQuery?.data?.me?.username ? 
+            <Authors authors={allAuthorsQuery.data.allAuthors} editAuthor={editAuthor}/> : <Redirect to="/login" />)}
       />
-      </Route>
       <Route
         path="/books"
-        render={() => (token || userQuery.data.me.username ? 
+        render={() => (token || userQuery?.data?.me?.username ? 
           <Books books={allBooksQuery.data.allBooks}/> : <Redirect to="/login" />)}
      />
       <Route
         path="/newbook"
-        render={() => (token || userQuery.data.me.username ? 
+        render={() => (token || userQuery?.data?.me?.username ? 
           <NewBook addBook={addBook}/> : <Redirect to="/login" />)}
      />
 
-      <Route path="/login" exact render={() => (token || userQuery.data.me.username? <Redirect to="/authors"/> : 
+      <Route path="/login" exact render={() => (token || userQuery?.data?.me?.username ? <Redirect to="/authors"/> : 
       <Login
         setErrorMessage={setErrorMessage}
         login={login}
         loginResult={loginResult}
       />)}/>
 
-      <Route path="/signup" exact render={() => (token || userQuery.data.me.username ? <Redirect to="/authors"/> : 
+      <Route path="/signup" exact render={() => (token || userQuery?.data?.me?.username ? <Redirect to="/authors"/> : 
       <SignUp
         setErrorMessage={setErrorMessage}
         handleRegister={signup}
@@ -83,7 +84,7 @@ const App = () => {
       <Route
         path="/"
         exact
-        render={() => (token || userQuery.data.me.username ? 
+        render={() => (token || userQuery?.data?.me?.username ? 
           <Redirect to="/authors"/> : <Redirect to="/login" />)}
      />
     </Switch>
