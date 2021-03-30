@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { ALL_BOOKS } from "../queries";
+import { useQuery } from "@apollo/client";
 import {
   Table,
   Thead,
@@ -9,15 +11,45 @@ import {
   TableCaption,
   Input,
   Button,
-  Box
+  Box,
+  useRadioGroup,
+  VStack,
+  HStack,
+  
 } from "@chakra-ui/react"
+import RadioCard from './RadioCard'
 
 const Books = (props) => {
-  
+
+  useEffect(() => {
+    props.getBooks()
+    console.log('lazy',props.lazyBooks)
+  }, []);
+
+  let genres = props.books.flatMap((book) => book.genres);
+
+    genres = [...new Set(genres)];
+
+  const books = props.lazyBooks
+    ? props.lazyBooks : props.books
+
+    const { getRootProps, getRadioProps } = useRadioGroup({
+      name: "framework",
+      defaultValue: "science",
+      onChange: val => 
+        props.getBooks({variables: { filterByGenre: val}})
+      
+
+    })
+    const group = getRootProps()
+ 
+
+ 
 
 
   return (
-      <Box p={4} shadow="sm" borderWidth="1px" width="xl" borderRadius="md" mx="auto" my="4">
+      <VStack spacing="2">
+      <Box p={4} shadow="sm" borderWidth="1px" width="xl" borderRadius="md" mx="auto" my="4" >
 
       <Table>
       <TableCaption>Books written by various Authors</TableCaption>
@@ -31,7 +63,7 @@ const Books = (props) => {
               published
             </Th>
           </Tr>
-          {props.books.map(a =>
+          {books.map(a =>
             <Tr key={a.title}>
               <Td>{a.title}</Td>
               <Td>{a.author.name}</Td>
@@ -40,7 +72,20 @@ const Books = (props) => {
           )}
         </Tbody>
       </Table>
+      
     </Box>
+
+    <HStack {...group} flexWrap="wrap" width="lg">
+    {genres.map((value) => {
+      const radio = getRadioProps({ value })
+      return (
+        <RadioCard key={value} {...radio} >
+          {value}
+        </RadioCard>
+      )
+    })}
+    </HStack>
+    </VStack>
   )
 }
 

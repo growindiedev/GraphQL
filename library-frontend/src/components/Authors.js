@@ -1,7 +1,6 @@
   
 import React from 'react'
 import {useFormik} from 'formik'
-import {VStack, Box, Heading, HStack} from '@chakra-ui/react'
 import {
     Table,
     Thead,
@@ -11,7 +10,8 @@ import {
     Td,
     TableCaption,
     Input,
-    Button
+    Button,
+    VStack, Box, Heading, HStack
   } from "@chakra-ui/react"
 
 const Authors = (props) => {
@@ -36,7 +36,9 @@ const Authors = (props) => {
       <TableCaption>Authors and the total no. books written by them</TableCaption>
         <Tbody>
           <Tr>
-            <Th>Author</Th>
+            <Th>
+              Author
+            </Th>
             <Th>
               Born
             </Th>
@@ -55,6 +57,8 @@ const Authors = (props) => {
       </Table>
 
       </Box>
+
+
     
       <form onSubmit={formik.handleSubmit}>
       <Heading fontWeight="semibold" size="md" p="4" color="blue.400" >Set birth year</Heading>
@@ -82,6 +86,8 @@ const Authors = (props) => {
           <Button type="submit" size="sm" variant="solid" p="2" colorScheme="purple" borderRadius="sm" w="sm">update</Button>
           </HStack>
       </form>
+
+
       </VStack>
       
   )

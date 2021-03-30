@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react'
-import { useQuery, useMutation } from '@apollo/client'
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
 import { Switch, Route, Redirect } from 'react-router-dom'
 
 import Authors from './components/Authors'
@@ -20,6 +20,7 @@ const App = () => {
     const [errorMessage, setErrorMessage] = useState(null)
     const allAuthorsQuery = useQuery(ALL_AUTHORS)
     const allBooksQuery = useQuery(ALL_BOOKS)
+    const [getBooks , books] = useLazyQuery(ALL_BOOKS, {fetchPolicy: "network-only"})
     const userQuery = useQuery(ME)
     const [addBook] = useMutation(ADD_BOOK, { refetchQueries: [ { query: ALL_BOOKS }, { query: ALL_AUTHORS }  ]})
     const [editAuthor] = useMutation(EDIT_AUTHOR, { refetchQueries: [ { query: ALL_AUTHORS }, { query: ALL_BOOKS } ]})
@@ -60,7 +61,7 @@ const App = () => {
       <Route
         path="/books"
         render={() => (token || userQuery?.data?.me?.username ? 
-          <Books books={allBooksQuery.data.allBooks}/> : <Redirect to="/login" />)}
+          <Books books={allBooksQuery.data.allBooks} getBooks={getBooks} lazyBooks={books?.data?.allBooks}/> : <Redirect to="/login" />)}
      />
       <Route
         path="/newbook"
