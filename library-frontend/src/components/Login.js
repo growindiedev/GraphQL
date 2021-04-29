@@ -19,12 +19,7 @@ const Login = ({ login, getUser }) => {
 
 
 	const history = useHistory()
-
-	// useEffect(() => {
-    //     getUser()
-    //   }, [])
-
-  const formik = useFormik({
+	const formik = useFormik({
     initialValues: {
       username: '',
       password: ''
@@ -33,7 +28,7 @@ const Login = ({ login, getUser }) => {
       try {
         await login({variables: {username, password}})
         resetForm()
-		//getUser();
+		getUser();
 		history.push("/")
       } catch (err) {
         console.error(err)

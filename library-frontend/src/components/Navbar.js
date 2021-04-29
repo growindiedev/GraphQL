@@ -9,14 +9,16 @@ const Navbar = (props) => {
 
     const history = useHistory()
     const client = useApolloClient()
-    //const [user, setUser] = useState()
-    // const usered = useQuery(ME)
+    let [user, setUser] = useState()
+    const usered = useQuery(ME)
 
-    // useEffect(() => {
-    //     if(usered.data){
-    //         setUser(usered.data?.me?.username)
-    //     }
-    //   }, [user, usered.data])
+    useEffect(() => {
+        if(usered.data){
+            setUser(usered.data?.me?.username)
+        } else if (props.lazyUser.data?.me != null){
+            setUser(props.lazyUser.data?.me?.username)
+        }
+      }, [props.lazyUser.data?.me, user, usered.data])
 
     //  useEffect(() => {
     //     if(props.user){
@@ -27,7 +29,7 @@ const Navbar = (props) => {
     //     }
     //   }, [props.lazyUser, props.user, user])
 
-    let user = props.lazyUser?.data?.me?.username ? props.lazyUser?.data?.me?.username : props.user?.data?.me?.username
+    //user = props.lazyUser?.data?.me?.username ? props.lazyUser?.data?.me?.username : props.user?.data?.me?.username
 
     const handleLogout = async () => {
         props.setToken(null)
@@ -44,7 +46,7 @@ const Navbar = (props) => {
     }
 
    // if( props.user?.username || props.token){
-    if( props.loginResult?.data){
+    if(user || props.token){
         return (
            
             <Flex  align="center" px="40"  bg="gray.200" py="1.5" color="gray.600" 

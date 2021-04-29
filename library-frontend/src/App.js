@@ -19,7 +19,6 @@ import { VStack, Alert} from '@chakra-ui/layout'
 
 const App = () => {
     const [token, setToken] = useState(null)
-    const [loggedUser, setLoggedUser] = useState(null)
 
     const [errorMessage, setErrorMessage] = useState(null)
     const allAuthorsQuery = useQuery(ALL_AUTHORS)
@@ -32,7 +31,6 @@ const App = () => {
 
     const [login, loginResult] = useMutation(LOGIN, {
       onError: (error) => setErrorMessage(error.graphQLErrors[0].message),
-      //refetchQueries: [ { query: ME }  ]
     })
 
     const [signup, signupResult] = useMutation(SIGNUP, {
