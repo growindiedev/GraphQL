@@ -1,19 +1,39 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { NavLink, useHistory } from 'react-router-dom'
 import {Flex, Box, Spacer, Button, Text, Image, ButtonGroup} from '@chakra-ui/react'
 import {useApolloClient, useQuery} from '@apollo/client'
+import { ME } from '../queries'
+
 
 const Navbar = (props) => {   
 
     const history = useHistory()
     const client = useApolloClient()
+    //const [user, setUser] = useState()
+    // const usered = useQuery(ME)
+
+    // useEffect(() => {
+    //     if(usered.data){
+    //         setUser(usered.data?.me?.username)
+    //     }
+    //   }, [user, usered.data])
+
+    //  useEffect(() => {
+    //     if(props.user){
+    //         setUser(props.user?.data?.me?.username)
+    //     }
+    //     else if(props.lazyUser){
+    //         setUser(props.lazyUser?.data?.me?.username)
+    //     }
+    //   }, [props.lazyUser, props.user, user])
+
+    let user = props.lazyUser?.data?.me?.username ? props.lazyUser?.data?.me?.username : props.user?.data?.me?.username
 
     const handleLogout = async () => {
         props.setToken(null)
         localStorage.clear()
         client.resetStore()
         history.push('/login')
-
     }
 
     const handlesignup = () => {
@@ -23,7 +43,8 @@ const Navbar = (props) => {
         history.push('/signup')
     }
 
-    if( props.user?.username || props.token){
+   // if( props.user?.username || props.token){
+    if( props.loginResult?.data){
         return (
            
             <Flex  align="center" px="40"  bg="gray.200" py="1.5" color="gray.600" 
@@ -43,7 +64,7 @@ const Navbar = (props) => {
                 <Spacer />
                 <Flex  alignItems="center">
                     
-                    <Text size="sm" fontWeight="semibold" mr="4">{`${props.user?.username} logged in `}</Text>
+                    <Text size="sm" fontWeight="semibold" mr="4">{`${user} logged in `}</Text>
                     
                     <Button px="2" colorScheme="blue" onClick={handleLogout} size="sm" variant="outline" borderRadius="sm">Logout</Button>
                 </Flex>

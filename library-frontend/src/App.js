@@ -9,6 +9,8 @@ import NewBook from './components/NewBook'
 import Login from './components/Login'
 import SignUp from './components/SignUp'
 import Navbar from './components/Navbar'
+import Homepage from './components/Homepage'
+import Recommendations from './components/Recommendations'
 
 
 
@@ -17,20 +19,27 @@ import { VStack, Alert} from '@chakra-ui/layout'
 
 const App = () => {
     const [token, setToken] = useState(null)
+    const [loggedUser, setLoggedUser] = useState(null)
+
     const [errorMessage, setErrorMessage] = useState(null)
     const allAuthorsQuery = useQuery(ALL_AUTHORS)
     const allBooksQuery = useQuery(ALL_BOOKS)
     const [getBooks , books] = useLazyQuery(ALL_BOOKS, {fetchPolicy: "network-only"})
+    const [getUser, user] = useLazyQuery(ME, {fetchPolicy: "network-only"})
     const userQuery = useQuery(ME)
     const [addBook] = useMutation(ADD_BOOK, { refetchQueries: [ { query: ALL_BOOKS }, { query: ALL_AUTHORS }  ]})
     const [editAuthor] = useMutation(EDIT_AUTHOR, { refetchQueries: [ { query: ALL_AUTHORS }, { query: ALL_BOOKS } ]})
 
     const [login, loginResult] = useMutation(LOGIN, {
       onError: (error) => setErrorMessage(error.graphQLErrors[0].message),
+      //refetchQueries: [ { query: ME }  ]
     })
 
     const [signup, signupResult] = useMutation(SIGNUP, {
       onError: (error) => setErrorMessage(error.graphQLErrors[0].message),
+      onCompleted: () => {
+        getUser()
+      }
     })
        
 
@@ -39,10 +48,13 @@ const App = () => {
         const token = loginResult.data.login.value
         setToken(token)
         localStorage.setItem('graphql-library-token', token)
+       // getUser();
+        console.log('testo', user)
     }
-  }, [loginResult.data])
+  }, [loginResult, user])
 
-  if (allAuthorsQuery.loading || allBooksQuery.loading || userQuery.loading)  {
+
+  if (allAuthorsQuery.loading || allBooksQuery.loading || userQuery.loading|| user.loading)  {
         return <div>loading...</div>
   }
 
@@ -50,7 +62,7 @@ const App = () => {
       
   return (
     <>
-    <Navbar setToken={setToken} user={userQuery?.data?.me} token={token}/>
+    <Navbar setToken={setToken} user={useQuery} token={token} getUser={getUser} lazyUser={user} loginResult={loginResult}/>
     <VStack spacing="5" p="10">
     <Switch>
       <Route
@@ -74,6 +86,7 @@ const App = () => {
         setErrorMessage={setErrorMessage}
         login={login}
         loginResult={loginResult}
+        getUser={getUser}
       />)}/>
 
       <Route path="/signup" exact render={() => (token || userQuery?.data?.me?.username ? <Redirect to="/authors"/> : 
@@ -86,7 +99,7 @@ const App = () => {
         path="/"
         exact
         render={() => (token || userQuery?.data?.me?.username ? 
-          <Redirect to="/authors"/> : <Redirect to="/login" />)}
+          <Homepage/> : <Redirect to="/login" />)}
      />
     </Switch>
 

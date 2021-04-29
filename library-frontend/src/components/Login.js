@@ -1,4 +1,4 @@
-import React  from 'react'
+import React, {useEffect}  from 'react'
 import {useFormik} from 'formik'
 import { BiUserCircle } from 'react-icons/bi'
 import {FcLock} from 'react-icons/fc'
@@ -15,10 +15,14 @@ import {
 	
 } from '@chakra-ui/react';
 
-const Login = ({ login }) => {
+const Login = ({ login, getUser }) => {
 
 
 	const history = useHistory()
+
+	// useEffect(() => {
+    //     getUser()
+    //   }, [])
 
   const formik = useFormik({
     initialValues: {
@@ -29,7 +33,7 @@ const Login = ({ login }) => {
       try {
         await login({variables: {username, password}})
         resetForm()
-		//await getUsers()
+		//getUser();
 		history.push("/")
       } catch (err) {
         console.error(err)

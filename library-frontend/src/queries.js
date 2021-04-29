@@ -27,6 +27,7 @@ export const ME = gql`
     query me{
     me {
         username
+        favouriteGenre
     }
 }
 `
@@ -60,8 +61,8 @@ export const LOGIN = gql`
 }`
 
 export const SIGNUP = gql`
-    mutation createUser($username: String!, $password: String!){
-    createUser(username: $username, password: $password){
+    mutation createUser($username: String!, $password: String!, $favouriteGenre: String!){
+    createUser(username: $username, password: $password, favoriteGenre: $favouriteGenre){
         username
     }
 }` 

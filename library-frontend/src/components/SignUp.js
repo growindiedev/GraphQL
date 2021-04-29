@@ -1,6 +1,6 @@
 import React from 'react'
 import {useFormik} from 'formik'
-import { BiUserCircle } from 'react-icons/bi'
+import { BiUserCircle, BiBookHeart } from 'react-icons/bi'
 import {FcLock} from 'react-icons/fc'
 import {useHistory} from 'react-router-dom'
 
@@ -22,16 +22,16 @@ const RegisterForm = ({handleRegister, setErrorMessage}) => {
   const formik = useFormik({
     initialValues: {
       username: '',
+      favouriteGenre: '',
       password: '',
       confirmPassword: '',
-      name: ''
     },
-    onSubmit: async ({username, password, confirmPassword}, {resetForm}) => {
+    onSubmit: async ({username, password, favouriteGenre, confirmPassword}, {resetForm}) => {
       if (password !== confirmPassword) {
         setErrorMessage({ error: 'Passwords do not watch' }, 5)
       }
       try {
-        await handleRegister({variables: {username, password}})
+        await handleRegister({variables: {username, password, favouriteGenre}})
         resetForm()
         history.push("/login")
       } catch (err) {
@@ -63,6 +63,20 @@ const RegisterForm = ({handleRegister, setErrorMessage}) => {
             />
         </InputGroup>
       </FormControl>
+      <FormControl isRequired>
+			<InputGroup>
+				<InputLeftElement children={<BiBookHeart />} />
+				<Input
+				type='text'
+				name='favouriteGenre'
+				placeholder='Favourite Genre'
+				aria-label='Favourite Genre'
+                onChange={formik.handleChange} 
+                value={formik.values.favouriteGenre}
+				bg='white'
+				/>
+			</InputGroup>
+		</FormControl>
       <FormControl isRequired >
         <InputGroup>
           <InputLeftElement children={<FcLock/>} />
@@ -77,13 +91,13 @@ const RegisterForm = ({handleRegister, setErrorMessage}) => {
           />
         </InputGroup>
       </FormControl>
-        <FormControl isRequired>
+    <FormControl isRequired>
 			<InputGroup>
 				<InputLeftElement children={<FcLock />} />
 				<Input
 				type='password'
 				name='confirmPassword'
-				placeholder='confirm password'
+				placeholder='Confirm Password'
 				aria-label='confirmPassword'
                 onChange={formik.handleChange} 
                 value={formik.values.confirmPassword}
@@ -91,6 +105,7 @@ const RegisterForm = ({handleRegister, setErrorMessage}) => {
 				/>
 			</InputGroup>
 		</FormControl>
+    
       <Button
         type='submit'
         boxShadow='sm'
