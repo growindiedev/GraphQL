@@ -54,7 +54,7 @@ const NewBook = (props) => {
             onChange={({ target }) => setPublished(target.value)}
           />
         </FormControl>
-        <FormControl isRequired>
+        <FormControl >
         <FormLabel>Genres</FormLabel>
           <Input
             value={genre}

@@ -3,6 +3,9 @@ import {useFormik} from 'formik'
 import { BiUserCircle } from 'react-icons/bi'
 import {FcLock} from 'react-icons/fc'
 import { useHistory } from 'react-router-dom'
+import { useMutation } from '@apollo/client'
+import { LOGIN } from '../queries'
+
 import {
 	Input,
 	Stack,
@@ -10,12 +13,23 @@ import {
 	InputLeftElement,
 	Button,
 	FormControl,
-	Center,
 	Text,
 	
 } from '@chakra-ui/react';
 
-const Login = ({ login, getUser }) => {
+const Login = ({ setToken, setErrorMessage, getUser}) => {
+
+	const [login, loginResult] = useMutation(LOGIN, {
+		onError: (error) => setErrorMessage(error.graphQLErrors[0].message),
+	  })
+
+	useEffect(() => {
+		if (loginResult.data) {
+			const token = loginResult.data.login.value
+			setToken(token)
+			localStorage.setItem('graphql-library-token', token)
+		}
+	  }, [loginResult, setToken])
 
 
 	const history = useHistory()

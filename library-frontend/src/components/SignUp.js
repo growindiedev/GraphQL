@@ -3,6 +3,8 @@ import {useFormik} from 'formik'
 import { BiUserCircle, BiBookHeart } from 'react-icons/bi'
 import {FcLock} from 'react-icons/fc'
 import {useHistory} from 'react-router-dom'
+import { useMutation } from '@apollo/client'
+import { SIGNUP } from '../queries'
 
 import {
 	Input,
@@ -16,7 +18,12 @@ import {
 
 const RegisterForm = ({handleRegister, setErrorMessage}) => {
 
-    const history = useHistory()
+  const [signup, signupResult] = useMutation(SIGNUP, {
+    onError: (error) => setErrorMessage(error.graphQLErrors[0].message),
+    
+  })
+
+  const history = useHistory()
 
 
   const formik = useFormik({
@@ -31,7 +38,7 @@ const RegisterForm = ({handleRegister, setErrorMessage}) => {
         setErrorMessage({ error: 'Passwords do not watch' }, 5)
       }
       try {
-        await handleRegister({variables: {username, password, favouriteGenre}})
+        await signup({variables: {username, password, favouriteGenre}})
         resetForm()
         history.push("/login")
       } catch (err) {

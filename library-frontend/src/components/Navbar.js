@@ -9,16 +9,26 @@ const Navbar = (props) => {
 
     const history = useHistory()
     const client = useApolloClient()
-    let [user, setUser] = useState()
-    const usered = useQuery(ME)
+    let [user, setUser] = useState(null)
+    let token = localStorage.getItem('graphql-library-token') || null
 
-    useEffect(() => {
-        if(usered.data){
-            setUser(usered.data?.me?.username)
+    const userQuery = useQuery(ME)
+
+    // useEffect(() => {
+    //     if(usered.data){
+    //         setUser(usered.data?.me?.username)
+    //     } else if (props.lazyUser.data?.me != null){
+    //         setUser(props.lazyUser.data?.me?.username)
+    //     }
+    //   }, [])
+
+      useEffect(() => {
+        if(userQuery?.data?.me?.username){
+            setUser(userQuery?.data?.me?.username)
         } else if (props.lazyUser.data?.me != null){
             setUser(props.lazyUser.data?.me?.username)
         }
-      }, [props.lazyUser.data?.me, user, usered.data])
+      }, [props.lazyUser.data?.me, userQuery?.data?.me?.username])
 
     //  useEffect(() => {
     //     if(props.user){
@@ -31,10 +41,12 @@ const Navbar = (props) => {
 
     //user = props.lazyUser?.data?.me?.username ? props.lazyUser?.data?.me?.username : props.user?.data?.me?.username
 
-    const handleLogout = async () => {
+    const handleLogout =  () => {
         props.setToken(null)
+        //localStorage.clear()
         localStorage.clear()
         client.resetStore()
+        setUser(null)
         history.push('/login')
     }
 
@@ -46,7 +58,7 @@ const Navbar = (props) => {
     }
 
    // if( props.user?.username || props.token){
-    if(user || props.token){
+    if(token){
         return (
            
             <Flex  align="center" px="40"  bg="gray.200" py="1.5" color="gray.600" 
@@ -66,7 +78,7 @@ const Navbar = (props) => {
                 <Spacer />
                 <Flex  alignItems="center">
                     
-                    <Text size="sm" fontWeight="semibold" mr="4">{`${user} logged in `}</Text>
+                    <Text size="sm" fontWeight="semibold" mr="4">{`${userQuery?.data?.me?.username} logged in `}</Text>
                     
                     <Button px="2" colorScheme="blue" onClick={handleLogout} size="sm" variant="outline" borderRadius="sm">Logout</Button>
                 </Flex>
