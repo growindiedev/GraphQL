@@ -16,11 +16,12 @@ import {
 	Text,
 } from '@chakra-ui/react';
 
-const RegisterForm = ({handleRegister, setErrorMessage}) => {
+const SignUp = ({setNotificationMessage}) => {
 
-  const [signup, signupResult] = useMutation(SIGNUP, {
-    onError: (error) => setErrorMessage(error.graphQLErrors[0].message),
-    
+  const [signup, signupRes] = useMutation(SIGNUP, {
+    onError: (error) => setNotificationMessage({error: error.graphQLErrors[0].message}),
+    onCompleted: () => setNotificationMessage({notification: `successfully registered. You can login now`})
+
   })
 
   const history = useHistory()
@@ -35,14 +36,14 @@ const RegisterForm = ({handleRegister, setErrorMessage}) => {
     },
     onSubmit: async ({username, password, favouriteGenre, confirmPassword}, {resetForm}) => {
       if (password !== confirmPassword) {
-        setErrorMessage({ error: 'Passwords do not watch' }, 5)
+        setNotificationMessage({ error: 'Passwords do not watch' })
       }
       try {
         await signup({variables: {username, password, favouriteGenre}})
         resetForm()
         history.push("/login")
       } catch (err) {
-        console.error(err)
+        setNotificationMessage({error: err})
       }
     },
   });
@@ -132,4 +133,4 @@ const RegisterForm = ({handleRegister, setErrorMessage}) => {
   
 }
 
-export default RegisterForm
+export default SignUp

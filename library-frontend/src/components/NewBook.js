@@ -21,6 +21,8 @@ const NewBook = (props) => {
     setAuhtor('')
     setGenres([])
     setGenre('')
+    
+    props.setNotificationMessage({ notification: `The ${title} has been added`})
   }
 
   const addGenre = () => {

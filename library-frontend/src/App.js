@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
 import { Switch, Route, Redirect } from 'react-router-dom'
 
@@ -10,15 +10,16 @@ import Login from './components/Login'
 import SignUp from './components/SignUp'
 import Navbar from './components/Navbar'
 import Homepage from './components/Homepage'
+import Notification from './components/Notification'
 
 
 
 import { ALL_AUTHORS, ALL_BOOKS, ADD_BOOK, EDIT_AUTHOR, ME } from './queries'
-import { VStack, Alert} from '@chakra-ui/layout'
+import { VStack} from '@chakra-ui/layout'
 
 const App = () => {
     const [token, setToken] = useState(null)
-    const [errorMessage, setErrorMessage] = useState(null)
+    const [notificationMessage, setNotificationMessage] = useState(null)
     const allAuthorsQuery = useQuery(ALL_AUTHORS)
     const allBooksQuery = useQuery(ALL_BOOKS)
     const [getBooks , books] = useLazyQuery(ALL_BOOKS, {fetchPolicy: "network-only"})
@@ -27,6 +28,8 @@ const App = () => {
     const [addBook] = useMutation(ADD_BOOK, { refetchQueries: [ { query: ALL_BOOKS }, { query: ALL_AUTHORS }  ]})
     const [editAuthor] = useMutation(EDIT_AUTHOR, { refetchQueries: [ { query: ALL_AUTHORS }, { query: ALL_BOOKS } ]})
 
+    
+
   if (allAuthorsQuery.loading || allBooksQuery.loading || userQuery.loading|| user.loading)  {
         return <div>loading...</div>
   }
@@ -34,12 +37,13 @@ const App = () => {
   return (
     <>
     <Navbar setToken={setToken} user={useQuery}  getUser={getUser} lazyUser={user} />
+    <Notification notificationMessage={notificationMessage} delay="3000"/>
     <VStack spacing="5" p="10">
     <Switch>
       <Route
           path="/authors"
           render={() => (token || userQuery?.data?.me?.username ? 
-            <Authors authors={allAuthorsQuery.data.allAuthors} editAuthor={editAuthor}/> : <Redirect to="/login" />)}
+          <Authors authors={allAuthorsQuery.data.allAuthors} editAuthor={editAuthor}/> : <Redirect to="/login" />)}
       />
       <Route
         path="/books"
@@ -49,19 +53,21 @@ const App = () => {
       <Route
         path="/newbook"
         render={() => (token || userQuery?.data?.me?.username ? 
-          <NewBook addBook={addBook}/> : <Redirect to="/login" />)}
+          <NewBook addBook={addBook} setNotificationMessage={setNotificationMessage}/> : <Redirect to="/login" />)}
      />
 
-      <Route path="/login" exact render={() => (token || userQuery?.data?.me?.username ? <Redirect to="/authors"/> : 
+      <Route path="/login" exact render={() => (token || userQuery?.data?.me?.username ? <Redirect to="/"/> : 
       <Login
-        setErrorMessage={setErrorMessage}
+        setNotificationMessage={setNotificationMessage}
         getUser={getUser}
         setToken={setToken}
       />)}/>
 
-      <Route path="/signup" exact render={() => (token || userQuery?.data?.me?.username ? <Redirect to="/authors"/> : 
+      <Route path="/signup" exact render={() => (token || userQuery?.data?.me?.username ? <Redirect to="/"/> : 
       <SignUp
-        setErrorMessage={setErrorMessage}
+       setNotificationMessage={setNotificationMessage}
+       getUser={getUser}
+
       />)}/>
 
       <Route

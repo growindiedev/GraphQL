@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom'
 import { useMutation } from '@apollo/client'
 import { LOGIN } from '../queries'
 
+
 import {
 	Input,
 	Stack,
@@ -17,10 +18,12 @@ import {
 	
 } from '@chakra-ui/react';
 
-const Login = ({ setToken, setErrorMessage, getUser}) => {
+const Login = ({ setToken, setNotificationMessage, getUser}) => {
 
 	const [login, loginResult] = useMutation(LOGIN, {
-		onError: (error) => setErrorMessage(error.graphQLErrors[0].message),
+		onError: (error) => setNotificationMessage({error: error.graphQLErrors[0].message}),
+		onCompleted: (notify) => setNotificationMessage({notification: `user has been logged in successfully`}),
+		
 	  })
 
 	useEffect(() => {
@@ -31,7 +34,6 @@ const Login = ({ setToken, setErrorMessage, getUser}) => {
 		}
 	  }, [loginResult, setToken])
 
-
 	const history = useHistory()
 	const formik = useFormik({
     initialValues: {
@@ -41,18 +43,15 @@ const Login = ({ setToken, setErrorMessage, getUser}) => {
     onSubmit: async ({username, password}, {resetForm}) => {
       try {
         await login({variables: {username, password}})
+		//toasty();
         resetForm()
-		getUser();
+		getUser()
 		history.push("/")
       } catch (err) {
         console.error(err)
       }
     },
   });
-
-
-
-  
 
   return (
 

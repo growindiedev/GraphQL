@@ -28,7 +28,7 @@ const Authors = (props) => {
   
 
   return (
-    <VStack p="5" mx="auto" width="xl" color="gray.600" spacing="5">
+    <VStack p="5" mx="auto" my="auto" width="xl" color="gray.600" spacing="5">
       <Heading size="lg"  fontWeight="semibold">Authors</Heading>
       <Box p={4} shadow="sm" borderWidth="1px" width="xl" borderRadius="md" mx="auto">
       <Table size="md">
