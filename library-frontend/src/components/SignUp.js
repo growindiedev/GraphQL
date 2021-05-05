@@ -36,7 +36,7 @@ const SignUp = ({setNotificationMessage}) => {
     },
     onSubmit: async ({username, password, favouriteGenre, confirmPassword}, {resetForm}) => {
       if (password !== confirmPassword) {
-        setNotificationMessage({ error: 'Passwords do not watch' })
+        setNotificationMessage({ error: 'Passwords do not match' })
       }
       try {
         await signup({variables: {username, password, favouriteGenre}})
