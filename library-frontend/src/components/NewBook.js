@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Box, Input, Button , FormControl, FormLabel, VStack, Text} from '@chakra-ui/react'
+import { useHistory } from 'react-router-dom'
 
 
 const NewBook = (props) => {
@@ -9,20 +10,22 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
+  const history = useHistory()
+
 
   const submit = async (event) => {
     event.preventDefault()
     
     console.log('add book...')
-    props.addBook({variables: {author, title, published: parseInt(published), genres}})
-
+    await props.addBook({variables: {author, title, published: parseInt(published), genres}})
+    await props.getUser()
+    props.setNotificationMessage({ notification: `The ${title} has been added`})
     setTitle('')
     setPublished('')
     setAuhtor('')
     setGenres([])
     setGenre('')
-    
-    props.setNotificationMessage({ notification: `The ${title} has been added`})
+    history.push("/books")
   }
 
   const addGenre = () => {

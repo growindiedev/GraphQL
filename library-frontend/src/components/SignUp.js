@@ -16,7 +16,7 @@ import {
 	Text,
 } from '@chakra-ui/react';
 
-const SignUp = ({setNotificationMessage}) => {
+const SignUp = ({setNotificationMessage, getUser}) => {
 
   const [signup, signupRes] = useMutation(SIGNUP, {
     onError: (error) => setNotificationMessage({error: error.graphQLErrors[0].message}),
@@ -41,6 +41,7 @@ const SignUp = ({setNotificationMessage}) => {
       try {
         await signup({variables: {username, password, favouriteGenre}})
         resetForm()
+        await getUser()
         history.push("/login")
       } catch (err) {
         setNotificationMessage({error: err})

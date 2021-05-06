@@ -1,16 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import { ALL_BOOKS } from "../queries";
-import { useQuery } from "@apollo/client";
+import React, { useEffect } from 'react'
 import {
   Table,
-  Thead,
   Tbody,
   Tr,
   Th,
   Td,
   TableCaption,
-  Input,
-  Button,
   Box,
   useRadioGroup,
   VStack,

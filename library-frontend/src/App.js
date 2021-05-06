@@ -53,7 +53,8 @@ const App = () => {
       <Route
         path="/newbook"
         render={() => (token || userQuery?.data?.me?.username ? 
-          <NewBook addBook={addBook} setNotificationMessage={setNotificationMessage}/> : <Redirect to="/login" />)}
+          <NewBook addBook={addBook} setNotificationMessage={setNotificationMessage} getUser={getUser}
+          /> : <Redirect to="/login" />)}
      />
 
       <Route path="/login" exact render={() => (token || userQuery?.data?.me?.username ? <Redirect to="/"/> : 
